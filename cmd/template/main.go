@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/gbaeke/go-template/pkg/api"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
@@ -24,4 +25,21 @@ func main() {
 	defer logger.Sync()
 	sugar := logger.Sugar()
 	sugar.Infow("started logger")
+
+	// retrieve config
+	var srvCfg api.Config
+	if err := viper.Unmarshal(&srvCfg); err != nil {
+		sugar.Panic("could not unmarshal config", zap.Error(err))
+	}
+
+	// log the config values
+	sugar.Infow("config values",
+		zap.String("welcome", srvCfg.Welcome),
+		zap.Int("port", srvCfg.Port),
+	)
+
+	// start HTTP server
+	srv, _ := api.NewServer(&srvCfg, sugar)
+	srv.StartServer()
+
 }
