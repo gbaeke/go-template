@@ -10,6 +10,10 @@ RUN apk add --no-cache git
 # certs
 RUN apk --no-cache add ca-certificates
 
+# add a user here because addgroup and adduser are not available in scratch
+RUN addgroup -S myapp \
+    && adduser -S -g myapp myapp
+
 # Working directory will be created if it does not exist
 WORKDIR /src
 
@@ -24,16 +28,24 @@ COPY ./ ./
 # Build the executable
 RUN CGO_ENABLED=0 go build \
 	-installsuffix 'static' \
-	-o /app .
+	-o /app ./cmd/app
 
 # STAGE 2: build the container to run
 FROM scratch AS final
+
+# add maintainer label
+LABEL maintainer="gbaeke"
 
 # copy compiled app
 COPY --from=build /app /app
 
 # copy ca certs
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+# copy users from builder which contains myapp user
+COPY --from=0 /etc/passwd /etc/passwd
+
+USER myapp
 
 # run binary
 ENTRYPOINT ["/app"]
