@@ -18,7 +18,7 @@ func TestIndexHandler(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 
-	//expecting 200 OK
+	//expecting "MockHello"
 	if response := rr.Body.String(); response != "MockHello" {
 		t.Errorf("handler returned wrong response: got %v want %v",
 			response, "MockHello")
