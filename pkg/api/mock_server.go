@@ -10,7 +10,7 @@ import (
 //NewMockServer returns server for testing
 func NewMockServer() *Server {
 	config := &Config{
-		Welcome: "MockHello",
+		Welcome: "MockHellooo",
 		Port:    9999,
 		Log:     false,
 		Timeout: 15 * time.Second,
