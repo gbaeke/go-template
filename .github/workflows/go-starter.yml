@@ -1,4 +1,6 @@
-name: Go
+# slightly modified GitHub Go starter workflow
+# added caching and removed build
+name: test
 
 on:
   push:
