@@ -9,8 +9,7 @@ on:
 
 jobs:
 
-  build:
-    name: Build
+  test:
     runs-on: ubuntu-latest
     steps:
 
