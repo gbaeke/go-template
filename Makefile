@@ -1,7 +1,9 @@
 # Makefile for go-template
 
 REPO:=gbaeke
-IMAGE:=$(REPO)/go-template
+TAG:=latest
+IMAGE:=$(REPO)/go-template:$(TAG)
+
 
 test:
 	go test -v -race ./...
@@ -9,5 +11,9 @@ test:
 build:
 	CGO_ENABLED=0 go build -installsuffix 'static' -o app cmd/app/*
 
-docker:
+docker-build:
 	docker build -t $(IMAGE) .
+
+docker-push:
+	docker build -t $(IMAGE) .
+	docker push $(IMAGE)

@@ -30,3 +30,9 @@ jobs:
 
     - name: Test
       run: make test
+    
+    - name: Validate yaml
+      uses: stefanprodan/kube-tools@v1
+      with:
+        command: |
+          kustomize build ./deploy | kubeval --strict
