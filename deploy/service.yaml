@@ -4,7 +4,7 @@ metadata:
   name: go-template-service
 spec:
   ports:
-    - Port: 80
+    - port: 80
       targetPort: 8080
       protocol: TCP
   selector:

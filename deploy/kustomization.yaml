@@ -3,5 +3,6 @@ kind: Kustomization
 namespace: go-template
 
 resources:
+  - namespace.yaml
   - deployment.yaml
   - service.yaml
