@@ -12,7 +12,7 @@ RUN apk --no-cache add ca-certificates
 
 # add a user here because addgroup and adduser are not available in scratch
 RUN addgroup -S myapp \
-    && adduser -S -g myapp myapp
+    && adduser -S -u 10000 -g myapp myapp
 
 # Working directory will be created if it does not exist
 WORKDIR /src

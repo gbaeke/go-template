@@ -18,6 +18,9 @@ spec:
         - name: go-template
           image: gbaeke/go-template:latest
           securityContext:
+            runAsUser: 10000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
             capabilities:
               drop:
                 - all
