@@ -1,0 +1,19 @@
+name: trivy-scan
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  trivy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build container image
+        run:  docker build -t gbaeke/go-template:${GITHUB_SHA} .
+      - name: Scan image
+        uses: docker://docker.io/aquasec/trivy:latest
+        with:
+          args: --cache-dir /var/lib/trivy --no-progress --exit-code 1 --severity MEDIUM,HIGH,CRITICAL gbaeke/go-template:${GITHUB_SHA}
