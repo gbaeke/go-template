@@ -17,7 +17,7 @@ jobs:
           IMAGE=gbaeke/go-template:${GITHUB_SHA}
           docker build -t ${IMAGE} .
           echo "::set-output name=image::$IMAGE"
-      - name: Scan image
+      - name: Scan image # there will not be much to scan though 😀
         uses: docker://docker.io/aquasec/trivy:latest
         with:
           args: --cache-dir /var/lib/trivy --no-progress --exit-code 1 --severity MEDIUM,HIGH,CRITICAL ${{ steps.build.outputs.image }}
