@@ -17,6 +17,10 @@ spec:
       containers:
         - name: go-template
           image: gbaeke/go-template:latest
+          securityContext:
+            capabilities:
+              drop:
+                - all
           args: ["--port=8080"]
           ports:
             - containerPort: 8080
