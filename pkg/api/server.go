@@ -11,7 +11,22 @@ import (
 
 	"github.com/gorilla/mux"
 	"go.uber.org/zap"
+
+	_ "github.com/gbaeke/go-template/pkg/api/docs"
+	httpSwagger "github.com/swaggo/http-swagger"
+	"github.com/swaggo/swag"
 )
+
+// @title go-template API
+// @version 0.1
+// @description Go template
+
+// @contact.name Source Code
+// @contact.url https://github.com/gbaeke/go-template
+
+// @host localhost:8080
+// @BasePath /
+// @schemes http https
 
 //Config API configuration via viper
 type Config struct {
@@ -44,6 +59,16 @@ func (s *Server) setupRoutes() {
 	s.router.HandleFunc("/healthz", s.healthz)
 	s.router.HandleFunc("/readyz", s.readyz)
 	s.router.HandleFunc("/", s.indexHandler)
+	s.router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
+		httpSwagger.URL("/swagger/doc.json"),
+	))
+	s.router.HandleFunc("/swagger.json", func(w http.ResponseWriter, r *http.Request) {
+		doc, err := swag.ReadDoc()
+		if err != nil {
+			s.logger.Error("swagger error", zap.Error(err), zap.String("path", "/swagger.json"))
+		}
+		w.Write([]byte(doc))
+	})
 }
 
 func (s *Server) setupMiddlewares() {

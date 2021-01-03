@@ -17,3 +17,6 @@ docker-build:
 docker-push:
 	docker build -t $(IMAGE) .
 	docker push $(IMAGE)
+
+swagger:
+	cd pkg/api ; swag init -g server.go
