@@ -1,0 +1,36 @@
+basePath: /
+host: localhost:8080
+info:
+  contact:
+    name: Source Code
+    url: https://github.com/gbaeke/go-template
+  description: Go template
+  title: go-template API
+  version: "0.1"
+paths:
+  /healthz:
+    get:
+      consumes:
+      - application/json
+      description: Kubernetes uses this as liveness probe
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Liveness probe
+  /readyz:
+    get:
+      consumes:
+      - application/json
+      description: Kubernetes uses this as readiness probe
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+      summary: Readiness probe
+schemes:
+- http
+- https
+swagger: "2.0"
