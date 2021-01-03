@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: go-template
-          image: gbaeke/go-template:latest
+          image: ghcr.io/gbaeke/go-template:0.0.2
           securityContext:
             runAsUser: 10000
             runAsNonRoot: true
