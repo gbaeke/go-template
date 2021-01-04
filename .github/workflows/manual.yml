@@ -1,0 +1,11 @@
+name: Manual workflow
+
+on:
+ repository_dispatch
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo Manual run
