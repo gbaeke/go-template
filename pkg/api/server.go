@@ -13,6 +13,7 @@ import (
 	"go.uber.org/zap"
 
 	_ "github.com/gbaeke/go-template/pkg/api/docs"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"github.com/swaggo/swag"
 )
@@ -56,6 +57,7 @@ func NewServer(config *Config, logger *zap.SugaredLogger) (*Server, error) {
 
 //SetupRoutes sets up routes
 func (s *Server) setupRoutes() {
+	s.router.Handle("/metrics", promhttp.Handler())
 	s.router.HandleFunc("/healthz", s.healthz)
 	s.router.HandleFunc("/readyz", s.readyz)
 	s.router.HandleFunc("/", s.indexHandler)
