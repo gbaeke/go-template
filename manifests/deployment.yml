@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "clugitops-1722"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "clugitops-1722"
+  template:
+    metadata:
+      labels:
+        app: "clugitops-1722"
+    spec:
+      containers:
+        - name: "clugitops-1722"
+          image: "gebareg.azurecr.io/clugitops"
+          ports:
+          - containerPort: 8080
