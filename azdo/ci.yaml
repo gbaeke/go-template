@@ -1,0 +1,27 @@
+name: ci
+
+trigger:
+  batch: true
+  branches:
+    include: 
+    - main
+  paths:
+    include: 
+    - /
+    exclude:
+    - /deploy
+    - /manifests
+    
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- template: ./common/ci-vars.yaml
+  parameters:
+      projectName: go-template
+  # define 3 more variables: registryName, registryLogin and registryPassword in the build pipeline in UI
+
+steps:
+- template: ./common/ci-steps.yaml

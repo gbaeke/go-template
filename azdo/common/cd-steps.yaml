@@ -1,0 +1,67 @@
+steps:
+- checkout: none
+- task: HelmInstaller@1
+  displayName: 'install helm'
+  inputs:
+    helmVersionToInstall: $(helmVersion)
+- download: ci
+  artifact: build-artifact
+- bash: |
+   # login to Azure, the service principal needs at least
+   # Azure Kubernetes Server Cluster User Role
+   az login \
+        --service-principal \
+        -u $(aksSpId) \
+        -p '$(aksSpSecret)' \
+        --tenant $(aksSpTenantId)
+    
+    # note that in a cluster integrated with AAD, get-credentials
+    # is not sufficient AND make sure the spn has the required
+    # K8S RBAC config (e.g., can it do the helm deployment?)
+    # Note: --admin added here because my spn can do that
+    az aks get-credentials \
+        -n $(aks) \
+        -g $(rg) \
+        --admin
+
+    # in K8S AAD cluster, use kubelogin to convert the kube config obtained
+    # in the previous step
+
+    # export AAD_SERVICE_PRINCIPAL_CLIENT_ID=<spn client id>
+    # export AAD_SERVICE_PRINCIPAL_CLIENT_SECRET=<spn secret>
+    # export KUBECONFIG=$HOME/.kube/config
+    # kubelogin convert-kubeconfig -l spn
+
+    # Helm needs to login to the registry 
+
+    export HELM_EXPERIMENTAL_OCI=1   
+    echo '$(registryPassword)' | helm registry login $(registryServerName) \
+      --username $(registryLogin) \
+      --password-stdin
+
+    chartVersion=$(jq .chartVersion $(pipeline.workspace)/ci/build-artifact/variables.json -r)
+    imgVersion=$(jq .imgVersion $(pipeline.workspace)/ci/build-artifact/variables.json -r)
+
+    # print versions
+    echo chartVersion: $chartVersion
+    echo imgVersion: $imgVersion
+
+    # pull the chart (required before export)
+    helm chart pull $(registryServerName)/helm/$(projectName):$chartVersion
+
+    # export the chart to ./$(projectName)
+    helm chart export $(registryServerName)/helm/$(projectName):$chartVersion
+
+    # helm upgrade with fallback to install
+    helm upgrade \
+        --namespace $(k8sNamespace) \
+        --create-namespace \
+        --install \
+        --wait \
+        --set image.repository=$(registryServerName)/$(projectName) \
+        --set image.tag=$imgVersion \
+        --set replicaCount=$(replicas) \
+        $(projectName) \
+        ./$(projectName)
+  failOnStderr: true
+  displayName: 'deploy helm chart'

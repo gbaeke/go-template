@@ -1,0 +1,75 @@
+steps:
+  # in the first step, we set imageTag to the git commit sha
+  # this is just an example, this could be semver from a file or
+  # anything else
+- bash: |
+    echo Setting the imageTag to git sha $(build.SourceVersion)
+    echo '##vso[task.setvariable variable=imageTag]$(build.SourceVersion)'
+  displayName: 'set imageTag to git sha'
+  condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/main')
+- bash: |
+    echo imageTag: $(imageTag)
+    docker build \
+        -t $(registryServerName)/$(imageName):$(imageTag) .
+  failOnStderr: true
+  displayName: 'docker build'
+- task: SnykSecurityScan@0
+  inputs:
+    serviceConnectionEndpoint: 'Snyk Security'
+    testType: 'container'
+    dockerImageName: $(registryServerName)/$(imageName):$(imageTag)
+    dockerfilePath: './Dockerfile'
+    monitorOnBuild: true
+    failOnIssues: true
+    projectName: 'go-template-azdo'
+    organization: 'gbaeke'
+- bash: |
+    echo '$(registryPassword)' | docker login \
+        $(registryServerName) \
+        -u $(registryLogin) \
+        --password-stdin
+  displayName: 'docker login'
+- bash: |
+    docker push $(registryServerName)/$(imageName):$(imageTag)
+  failOnStderr: true
+  displayName: 'docker push'
+- task: HelmInstaller@1
+  displayName: 'install helm'
+  inputs:
+    helmVersionToInstall: $(helmVersion)
+- bash: |
+    # run helm lint
+    helm lint ./charts/$(projectName)
+  failOnStderr: true
+  displayName: 'helm lint'
+- bash: |
+    helm package \
+        --app-version $(imageTag) \
+        charts/$(projectName)
+  failOnStderr: true
+  displayName: 'helm package'
+- bash: |
+    # still experimental in Helm v3
+    export HELM_EXPERIMENTAL_OCI=1
+
+    # Helm needs to login to ACR    
+    echo '$(registryPassword)' | helm registry login $(registryServerName) \
+      --username $(registryLogin) \
+      --password-stdin
+
+    # Save the Helm chart locally - version tag comes from chart version
+    # A local save is required before you can push the chart to ACR
+    chartVersion=`helm chart save charts/go-template $(registryServerName)/helm/$(projectName) | grep version | awk -F ': ' '{print $2}'`
+
+    # Push the chart
+    # Note: if a chart with the same version already exists, it will be overwritten
+    #       this might not be the behavior you want
+    helm chart push $(registryServerName)/helm/$(projectName):$chartVersion
+
+    # save the Helm chart version and image tag to a JSON file to publish as an artifact
+    echo $(jq -n --arg chartVersion "$chartVersion" --arg imgVersion "$(imageTag)" '{chartVersion: $chartVersion, imgVersion: $imgVersion}') > $(build.artifactStagingDirectory)/variables.json
+  failOnStderr: true
+  name: helmPush
+  displayName: 'helm chart push'
+- publish: $(build.artifactStagingDirectory)
+  artifact: build-artifact

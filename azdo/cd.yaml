@@ -1,0 +1,56 @@
+trigger: none
+pr: none
+
+variables:
+- template: ./common/cd-vars.yaml
+  parameters:
+      projectName: go-template
+  # define 3 more variables: registryName, registryLogin and registryPassword in the Azure pipeline UI definition
+
+resources: 
+  pipelines:
+  - pipeline: ci
+    source: ci
+    trigger:
+      enabled: true
+      branches:
+        include:
+          - main
+
+stages:
+- stage: qa
+  displayName: qa
+  jobs:
+  - deployment: qa
+    displayName: 'deploy helm chart on AKS qa'
+    pool:
+      vmImage: ubuntu-latest
+    variables:
+      k8sNamespace: $(projectName)-qa
+      replicas: 1
+    environment: qa-$(projectName)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: ./common/cd-steps.yaml
+- stage: production
+  displayName: production
+  jobs:
+  - deployment: production
+    displayName: 'deploy helm chart on AKS prod'
+    pool:
+      vmImage: ubuntu-latest
+    variables:
+      k8sNamespace: $(projectName)-prod
+      replicas: 2
+    environment: prod-$(projectName)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: ./common/cd-steps.yaml
+
+    
+
+    
