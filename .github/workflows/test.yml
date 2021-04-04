@@ -36,3 +36,9 @@ jobs:
       with:
         command: |
           kustomize build ./deploy | kubeval --strict
+
+    - name: Validate policy
+      uses: gbaeke/kyverno-cli@v1
+      with:
+        command: |
+          kyverno apply ./policies --resource=./deploy/deployment.yaml
