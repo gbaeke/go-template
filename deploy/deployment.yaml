@@ -19,7 +19,7 @@ spec:
           image: ghcr.io/gbaeke/go-template:0.0.2
           securityContext:
             runAsUser: 10000
-            runAsNonRoot: false
+            runAsNonRoot: true
             readOnlyRootFilesystem: true
             capabilities:
               drop:
