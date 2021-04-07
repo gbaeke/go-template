@@ -37,7 +37,7 @@ jobs:
         command: |
           kustomize build ./deploy | kubeval --strict
 
-    - name: Validate policy
+    - name: Validate policies
       uses: gbaeke/kyvervo-action@v1
       with:
         command: |
