@@ -39,7 +39,7 @@ jobs:
 
     # run kyverno cli and use v1 instead of v1.0.0
     - name: Validate policies
-      uses: gbaeke/kyvervo-action@v1
+      uses: gbaeke/kyverno-action@v1
       with:
         command: |
           kyverno apply ./policies --resource=./deploy/deployment.yaml
