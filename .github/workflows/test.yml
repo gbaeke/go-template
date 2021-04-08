@@ -37,6 +37,7 @@ jobs:
         command: |
           kustomize build ./deploy | kubeval --strict
 
+    # run kyverno cli and use v1 instead of v1.0.0
     - name: Validate policies
       uses: gbaeke/kyvervo-action@v1
       with:
