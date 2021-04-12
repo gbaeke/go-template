@@ -10,5 +10,3 @@ To quickly install this app from a chart, do the following:
 helm repo add gbaeke https://gbaeke.github.io/helm-chart
 helm install mygoapp gbaeke/go-template
 ```
-
-Added policy check with Kyverno
