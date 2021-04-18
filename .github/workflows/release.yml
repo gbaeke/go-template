@@ -13,6 +13,14 @@ jobs:
     steps:
       - name: Check out
         uses: actions/checkout@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
         
       - name: Docker meta
         id: docker_meta
@@ -37,15 +45,14 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PASSWORD }}
           
-      - name: Build image
+      - name: Build and push image
         uses: docker/build-push-action@v2
         with:
           tags: ${{ steps.docker_meta.outputs.tags }} 
           file: ./Dockerfile
-          
-      - name: Push image
-        uses: docker/build-push-action@v2
-        with:
+          builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ steps.docker_meta.outputs.tags }}
-          file: ./Dockerfile
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          
+      
