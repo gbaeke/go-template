@@ -39,4 +39,5 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Hello from job 4 with environment
+        run: echo Hello from job 4
 
