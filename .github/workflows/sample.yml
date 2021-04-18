@@ -11,6 +11,8 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     name: Job Number One
+    env:
+      MESSAGE: Variable available to all steps in the job
     steps:
       - id: step1
         name: Say Hello
@@ -19,9 +21,11 @@ jobs:
         run: |
           echo Hello $USERNAME, welcome to $CLOUD
           echo "::set-output name=message::Hello $USERNAME"
+          echo $MESSAGE
       - name: Say Hello Again
         run: echo Hello Again
     outputs:
+      # available to all dependent jobs; see job3 below
       output1: ${{ steps.step1.outputs.message }}
   job2:
     runs-on: ubuntu-latest
