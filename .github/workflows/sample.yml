@@ -29,9 +29,9 @@ jobs:
       - name: Print env vars
         # see https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
         run: |
-          echo GITHUB_WORKFLOW: ${{ GITHUB_WORKFLOW }}
-          echo GITHUB_RUN_ID: ${{ GITHUB_RUN_ID }}
-          echo GITHUB_REPOSITORY: ${{ GITHUB_REPOSITORY }}
+          echo GITHUB_WORKFLOW: ${GITHUB_WORKFLOW}
+          echo GITHUB_RUN_ID: ${GITHUB_RUN_ID}
+          echo GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}
     outputs:
       # available to all dependent jobs; see job3 below
       output1: ${{ steps.step1.outputs.message }}
