@@ -38,6 +38,7 @@ jobs:
           echo GITHUB_REF: ${GITHUB_REF}
     outputs:
       # available to all dependent jobs; see job3 below
+      # needs is actually a context https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
       output1: ${{ steps.step1.outputs.message }}
   job2:
     runs-on: ubuntu-latest
@@ -62,4 +63,11 @@ jobs:
     steps:
       - name: Hello from job 4 with environment
         run: echo Hello from job 4
+  job5:
+    name: Job with expression
+    if: ${{ github.actor == 'gbaeke '}}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello from job 5 with expression
+        run: echo Hello $GITHUB_ACTOR
 
