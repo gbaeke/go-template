@@ -24,9 +24,12 @@ jobs:
     name: Job Number Two
     steps:
       - name: Hello from Job 2
-        run: echo Hello form Job 2
+        run: echo Hello from Job 2
   job3:
     runs-on: ubuntu-latest
     needs: job1
     if: always() # job depends on job 1 but should always run
+    steps:
+      - name: Hello from Job 3
+        run: echo Hello from Job 3
 
