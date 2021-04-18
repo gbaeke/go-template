@@ -12,13 +12,17 @@ jobs:
     runs-on: ubuntu-latest
     name: Job Number One
     steps:
-      - name: Say Hello
+      - id: step1
+        name: Say Hello
         env:
           USERNAME: Geert
         run: |
           echo Hello $USERNAME, welcome to $CLOUD
+          echo "::set-output name=message::Hello $USERNAME"
       - name: Say Hello Again
         run: echo Hello Again
+    outputs:
+      output1: ${{ steps.step1.outputs.message }}
   job2:
     runs-on: ubuntu-latest
     name: Job Number Two
@@ -32,10 +36,12 @@ jobs:
     if: always() # job depends on job 1 but should always run
     steps:
       - name: Hello from Job 3
-        run: echo Hello from Job 3
+        run:  | 
+          echo Hello from Job 3
+          echo ${{ needs.job1.outputs.output1 }}
   job4:
     name: Job with environment
-    environment: test
+    environment: test  # create environment in settings and set reviewers and or timer
     runs-on: ubuntu-18.04
     steps:
       - name: Hello from job 4 with environment
