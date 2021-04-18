@@ -16,12 +16,10 @@ jobs:
         
       - name: Docker meta
         id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@v1
+        uses: crazy-max/ghaction-docker-meta@v2
         with:
+          # basic use of this action
           images: ghcr.io/gbaeke/go-template
-          tag-sha: true
-          tag-edge: false
-          tag-latest: true
           
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
