@@ -32,6 +32,10 @@ jobs:
           echo GITHUB_WORKFLOW: ${GITHUB_WORKFLOW}
           echo GITHUB_RUN_ID: ${GITHUB_RUN_ID}
           echo GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}
+          echo GITHUB_EVENT_NAME: ${GITHUB_EVENT_NAME}
+          echo GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}
+          echo GITHUB_SHA: ${GITHUB_SHA}
+          echo GITHUB_REF: ${GITHUB_REF}
     outputs:
       # available to all dependent jobs; see job3 below
       output1: ${{ steps.step1.outputs.message }}
