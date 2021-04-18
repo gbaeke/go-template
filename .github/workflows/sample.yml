@@ -67,6 +67,7 @@ jobs:
   job5:
     name: Job with expression
     # use github context in the expression; further below use the env var
+    # note that expressions are in ${{ }}
     if: ${{ github.actor == 'gbaeke'}}
     runs-on: ubuntu-latest
     steps:
