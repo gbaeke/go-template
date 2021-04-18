@@ -11,11 +11,13 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     name: Job Number One
+    timeout-minutes: 360 # default is 360
     env:
       MESSAGE: Variable available to all steps in the job
     steps:
       - id: step1
         name: Say Hello
+        continue-on-error: false
         env:
           USERNAME: Geert
         run: |
