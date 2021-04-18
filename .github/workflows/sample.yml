@@ -26,10 +26,17 @@ jobs:
       - name: Hello from Job 2
         run: echo Hello from Job 2
   job3:
+    # no name; name will be job id job3
     runs-on: ubuntu-latest
     needs: job1
     if: always() # job depends on job 1 but should always run
     steps:
       - name: Hello from Job 3
         run: echo Hello from Job 3
+  job4:
+    name: Job with environment
+    environment: test
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Hello from job 4 with environment
 
