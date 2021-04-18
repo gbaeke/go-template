@@ -20,6 +20,8 @@ jobs:
         with:
           # basic use of this action
           images: ghcr.io/gbaeke/go-template
+          tags: |
+            type=sha
           
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
