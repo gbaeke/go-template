@@ -1,7 +1,7 @@
 name: Sample workflow
 
 on:
- repository_dispatch
+ workflow_dispatch
 
 env:
   SERVER: abc
