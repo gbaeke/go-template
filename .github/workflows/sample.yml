@@ -66,7 +66,7 @@ jobs:
         run: echo Hello from job 4
   job5:
     name: Job with expression
-    if: ${{ github.actor == 'gbaeke '}}
+    if: ${{ github.actor == 'gbaeke'}}
     runs-on: ubuntu-latest
     steps:
       - name: Hello from job 5 with expression
