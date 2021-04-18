@@ -36,6 +36,7 @@ jobs:
           echo GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}
           echo GITHUB_SHA: ${GITHUB_SHA}
           echo GITHUB_REF: ${GITHUB_REF}
+          echo GITHUB_ACTOR: ${GITHUB_ACTOR}
     outputs:
       # available to all dependent jobs; see job3 below
       # needs is actually a context https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
