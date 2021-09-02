@@ -41,6 +41,7 @@ func main() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("toml")
 	viper.AddConfigPath(".")
+	viper.AutomaticEnv()
 	err = viper.ReadInConfig()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "viper read config error %s\n", err.Error())
