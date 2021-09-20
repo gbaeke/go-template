@@ -40,7 +40,7 @@ func main() {
 	//also read from config.toml - flags come first
 	viper.SetConfigName("config")
 	viper.SetConfigType("toml")
-	viper.AddConfigPath(".")
+	viper.AddConfigPath("./config")
 	viper.AutomaticEnv()
 	err = viper.ReadInConfig()
 	if err != nil {
