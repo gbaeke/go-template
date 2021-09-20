@@ -18,7 +18,9 @@ spec:
         - name: go-template
           image: ghcr.io/gbaeke/go-template:0.0.2
           securityContext:
-            runAsUser: 10000
+            runAsUser: 1000
+            runAsGroup: 3000
+            fsGroup: 2000
             runAsNonRoot: true
             readOnlyRootFilesystem: true
             capabilities:
