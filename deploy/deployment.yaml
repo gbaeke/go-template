@@ -9,19 +9,19 @@ spec:
   selector:
     matchLabels:
       app: go-template
-  securityContext:
-    runAsUser: 1000
-    runAsGroup: 3000
-    fsGroup: 2000
-    runAsNonRoot: true
-    readOnlyRootFilesystem: true
-    capabilities:
-      drop:
-        - all
   template:
     metadata:
       labels:
         app: go-template
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 3000
+      fsGroup: 2000
+      runAsNonRoot: true
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+          - all
     spec:
       containers:
         - name: go-template
