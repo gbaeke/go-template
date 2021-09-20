@@ -9,6 +9,15 @@ spec:
   selector:
     matchLabels:
       app: go-template
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 3000
+    fsGroup: 2000
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - all
   template:
     metadata:
       labels:
@@ -17,15 +26,6 @@ spec:
       containers:
         - name: go-template
           image: ghcr.io/gbaeke/go-template:0.0.2
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 3000
-            fsGroup: 2000
-            runAsNonRoot: true
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop:
-                - all
           args: ["--port=8080"]
           ports:
             - containerPort: 8080
