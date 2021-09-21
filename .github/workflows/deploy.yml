@@ -1,0 +1,41 @@
+name: Deploy to AKS
+
+on:
+ repository_dispatch
+
+env:
+  CLUSTER_NAME: clu-pub
+  RESOURCE_GROUP: rg-aks
+  IMAGE_TAG: 1.0.9
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: azure/container-scan@v0
+        with:
+          image-name: ghcr.io/gbaeke/go-template:${{ env.IMAGE_TAG }}
+          run-quality-checks: true
+
+      - uses: azure/aks-set-context@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          resource-group: ${{ env.RESOURCE_GROUP }}
+      
+      - uses: azure/k8s-bake@v1
+        with:
+          renderEngine: kustomize
+          kustomizationPath: ./deploy/
+        id: bake
+
+      - uses: azure/k8s-deploy@v1.4
+        with:
+          namespace: go-template
+          manifests: ${{ steps.bake.outputs.manifestsBundle }}
+          images: |
+            ghcr.io/gbaeke/go-template:${{ env.IMAGE_TAG }}
+          action: deploy
